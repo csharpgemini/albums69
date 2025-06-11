@@ -1,4 +1,7 @@
+// server/controllers/albumController.js
+
 import Album from '../models/Album.js';
+import Image from '../models/Image.js';
 
 export const createAlbum = async (req, res) => {
   try {
@@ -16,5 +19,16 @@ export const getAlbums = async (req, res) => {
     res.json(albums);
   } catch {
     res.status(500).json({ error: 'Failed to fetch albums' });
+  }
+};
+
+export const deleteAlbum = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Image.deleteMany({ albumId: id });
+    await Album.findByIdAndDelete(id);
+    res.json({ message: 'Album and associated images deleted' });
+  } catch {
+    res.status(500).json({ error: 'Failed to delete album' });
   }
 };

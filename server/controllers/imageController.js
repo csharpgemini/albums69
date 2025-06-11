@@ -1,3 +1,5 @@
+// server/controllers/imageController.js
+
 import Image from '../models/Image.js';
 
 export const addImage = async (req, res) => {
@@ -21,5 +23,20 @@ export const getImagesByAlbum = async (req, res) => {
     res.json(images);
   } catch {
     res.status(500).json({ error: 'Failed to fetch images' });
+  }
+};
+
+export const deleteImage = async (req, res) => {
+  try {
+    const image = await Image.findByIdAndDelete(req.params.id);
+    if (image) {
+      const io = req.app.get('io');
+      io.to(image.albumId.toString()).emit('delete-image', image._id);
+      res.json({ message: 'Image deleted', id: image._id });
+    } else {
+      res.status(404).json({ error: 'Image not found' });
+    }
+  } catch {
+    res.status(500).json({ error: 'Failed to delete image' });
   }
 };

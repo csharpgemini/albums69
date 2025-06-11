@@ -1,3 +1,5 @@
+// client/src/api/images.js
+
 import axios from 'axios';
 
 const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
@@ -9,5 +11,10 @@ export const getImages = async (albumId) => {
 
 export const addImage = async (albumId, url) => {
   const res = await axios.post(`${API}/api/images`, { albumId, url });
+  return res.data;
+};
+
+export const deleteImage = async (id) => {
+  const res = await axios.delete(`${API}/api/images/${id}`);
   return res.data;
 };
